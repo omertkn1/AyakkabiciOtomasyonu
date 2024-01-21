@@ -1,0 +1,259 @@
+//Ömer TAŞKIN 2212721023 Ayakkabıcı Otomasyonu
+
+
+
+
+#include <iostream>
+#include <iomanip>
+#include <cstring>
+#include <fstream>
+#include <locale.h>
+using namespace std;
+
+const int depo_boyut = 100;
+const int string_uzunluk= 80;
+
+struct Ayakkabi {
+    char marka[depo_boyut];
+    char model[string_uzunluk];
+    double fiyat;
+    int adet;
+};
+
+Ayakkabi depo[depo_boyut];
+int depoBoyut = 0;
+
+    
+    
+void starline();
+void anaMenu();
+void musteriMenu();
+void AdminMenu();
+void ayakkabiEkle();
+void depoGoster();  
+void ayakkabiSat();
+void musteriAyarlari();
+void ayakkabiAl();
+void adminStokEkle();
+void hyphenline();
+int main() {
+    setlocale(LC_ALL,"Turkish");
+    int sec;
+
+    do {
+        anaMenu();
+        cout << "Seçiminizi yapınız: ";
+        		starline();
+                			cout<<endl;
+                hyphenline();
+        cin >> sec;
+
+        switch (sec) {
+            case 1:
+                depoGoster(); 
+                starline();
+                cout<<endl;
+                hyphenline();
+                break;
+            case 2:
+                ayakkabiAl();
+                starline();
+                cout<<endl;
+                hyphenline();
+                break;
+            case 3:
+            	
+                AdminMenu();
+                cout << "Seçiminizi yapınız: ";
+                cin >> sec;
+
+                switch (sec) {
+                    case 1:
+                    	
+                        ayakkabiEkle();
+                        starline();
+                        break;
+                    case 2:
+                    	
+                        adminStokEkle();
+                        starline();
+                	cout<<endl;
+                	hyphenline();
+                        break;
+                        
+                    case 3:
+                        cout << "Programdan çıkıyorsunuz!" << endl;
+                        starline();
+                		cout<<endl;
+                		hyphenline();
+                        break;
+                    default:
+                        cout << "Yanlış giriş yaptınız,tekrar deneyin!" << endl;
+                }
+                break;
+            case 4:
+                cout << "Programdan çıkıyorsunuz!" << endl;
+                starline();
+                cout<<endl;
+                hyphenline();
+                break;
+            default:
+                cout << "Yanlış giriş yaptınız,tekrar deneyin!" << endl;
+                starline();
+                hyphenline();
+        }
+    } while (sec != 4);
+
+    return 0;
+}
+
+void anaMenu() {
+    cout << "\n====== Ayakkabıcı Otomasyon Sistemi ======\n";
+    cout << "1. Stoklar\n";
+    cout << "2. Müşteri seçenekleri\n";
+    cout << "3. Admin seçenekleri\n";
+    cout << "4. Çıkış\n";
+}
+
+void AdminMenu() {
+    cout << "\n====== Yönetici Seçenekleri ======\n";
+    cout << "1. Depoya yeni ayakkabı ekle\n";
+    cout << "2. Var olan ayakkabı modeline ekleme yap\n";
+    cout << "3. Çıkış\n";
+}
+
+void ayakkabiEkle() {
+    if (depoBoyut < depo_boyut) {
+        Ayakkabi ayakkabi1;
+        
+        cout << "\nAyakkabı detaylarını girin:\n";
+        cout << "Marka: ";
+        cin >> ayakkabi1.marka;
+
+        cout << "Model: ";
+        cin >> ayakkabi1.model;
+
+        cout << "Fiyat: ";
+        cin >> ayakkabi1.fiyat;
+
+        cout << "Adet: ";
+        cin >> ayakkabi1.adet;
+
+        depo[depoBoyut++] = ayakkabi1;
+
+        cout << "Ayakkabı depoya eklendi.\n";
+    } else {
+        cout << "Depo dolu,daha fazla ayakkabı eklenemez.\n";
+    }
+}
+
+void depoGoster() {
+    cout << "\n====== DEPO ======\n";
+    cout << setw(15) << "Marka" << setw(15) << "Model" << setw(10) << "Fiyat" << setw(10) << "Adet\n";
+
+    for (int i = 0; i < depoBoyut; ++i) {
+        cout << setw(15) << depo[i].marka << setw(15) << depo[i].model << setw(10) << depo[i].fiyat << setw(10) << depo[i].adet << endl;
+    }
+}
+
+
+void ayakkabiAl() {
+    depoGoster();
+    cout << "\nSatın alacağınız ayakkabının markasını ve modelini giriniz:\n";
+    char aMarka[string_uzunluk], aModel[string_uzunluk];
+    cout << "Marka: ";
+    cin >> aMarka;
+
+    cout << "Model: ";
+    cin >> aModel;
+
+    for (int i = 0; i < depoBoyut; ++i) {
+        if (strcmp(depo[i].marka, aMarka) == 0 && strcmp(depo[i].model, aModel) == 0) {
+            if (depo[i].adet > 0) {
+                depo[i].adet--;
+                cout << "Ayakkabı başarıyla satın alındı .\n";
+            } else {
+                cout << "Seçilen ayakkabının stokları tükenmiştir\n";
+            }
+            return;
+        }
+    }
+
+    cout << "Depoda bu ayakkabı bulunamadı.\n";
+}
+
+void adminStokEkle() 
+{
+    depoGoster();
+    cout << "\nStoğa ekleyeceğiniz ayakkabının markasını ve modelini giriniz::\n";
+    char aMarka[string_uzunluk], aModel[string_uzunluk];
+    cout << "Marka: ";
+    cin >> aMarka;
+
+    cout << "Model: ";
+    cin >> aModel;
+
+    for (int i = 0; i < depoBoyut; ++i) 
+	{
+        if (strcmp(depo[i].marka, aMarka) == 0 && strcmp(depo[i].model, aModel) == 0) {
+            int ekstok;
+            cout << "Kaç tane eklenecek: ";
+            cin >> ekstok;
+            depo[i].adet += ekstok;
+            cout << "Stoğa ekleme yapıldı.\n";
+            return;
+        }
+    }
+
+    cout << "Depoda bu ayakkabı yok.\n";
+}
+
+
+void starline()
+{
+	cout<<"********************************************";
+	cout<<endl;
+}
+
+
+
+
+
+void hyphenline()
+{
+	cout<<"--------------------------------------------";
+	cout<<endl;
+}
+
+
+
+
+void dosyaOku() {
+    ifstream file("ayakkabici_envanter.txt");
+    if (file.is_open()) 
+	{
+        while (!file.eof()) 
+		{
+            file >> depo[depoBoyut].marka;
+            file >> depo[depoBoyut].model;
+            file >> depo[depoBoyut].fiyat;
+            file >> depo[depoBoyut].adet;
+            depoBoyut++;
+        }
+        file.close();
+    }
+}
+void dosyaYaz() {
+    ofstream file("ayakkabici_envanter.txt");
+    if (file.is_open()) 
+	{
+        for (int i = 0; i < depoBoyut; ++i) 
+		{
+            file << depo[i].marka << " ";
+            file << depo[i].model << " ";
+            file << depo[i].fiyat << " ";
+            file << depo[i].adet << "\n";
+        }
+        file.close();
+    }
+}
